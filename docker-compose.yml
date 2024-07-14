@@ -1,30 +1,20 @@
-version: "3.3"
-
-services: 
-
+version: '3.8'
+services:
   nocodb:
-    image: nocodb/nocodb:latest
-    container_name: nocodb
-    ports: 
-      - "8200:8081"
-    restart: unless-stopped 
-    depends_on: 
-      - db 
-    environment: 
-      NC_DB: "mysql2://db:3306?u=noco&p=password&d=root_db"
-    volumes: 
-      - ./nc_data:/usr/app/data
+    image: nocodb/nocodb
+    ports:
+      - "8082:8082"
+    environment:
+      NC_DB: "mysql://noco:password@nocodb-db:3306/root_db"
+    depends_on:
+      - nocodb-db
 
-  db: 
-    image: mysql:8.0.32
-    container_name: nocodb-db
-    restart: unless-stopped
-    environment: 
+  nocodb-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: root_db
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
       MYSQL_USER: noco
-    volumes: 
-      - ./db_data:/var/lib/mysql
-
-    
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
